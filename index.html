@@ -174,7 +174,7 @@ body{font-family:var(--sans);font-weight:300;min-height:100vh;
     <div class="typecard"><img id="rimg" alt=""></div>
 
     <div class="actions">
-      <a class="btn center" id="download" download style="text-decoration:none;display:block">Descargar mi tarjeta</a>
+      <p class="meta center" style="margin:0 0 4px">✦ Mantén presionada tu tarjeta para guardarla y compartirla en stories</p>
       <button class="btn ghost" id="restart">Volver a hacer el quiz</button>
     </div>
     <p class="footer">Every mess is a choice. So is your authority.<span class="mono">VA</span></p>
@@ -299,7 +299,6 @@ function results(){
   $("rtype").textContent = T.name;
   $("rchar").textContent = T.ch;
   $("rimg").src = T.img; $("rimg").alt = "Tarjeta " + T.name;
-  $("download").href = T.img; $("download").setAttribute("download", "authority-map-" + key + ".jpg");
 
   // gauges
   const C = 2*Math.PI*48;
