@@ -164,7 +164,7 @@ form{display:grid;gap:14px}
   <!-- INTRO -->
   <section id="intro" class="screen on center">
     <div class="cover"><img src="assets/matriz.jpg" alt="The Authority Map: matriz Mérito por Autoridad ejercida con los cuatro tipos"></div>
-    <p class="lead">8 preguntas para descubrir en cuál de los cuatro cuadrantes estás hoy.</p>
+    <p class="lead" id="introLead">8 preguntas para descubrir en cuál de los cuatro cuadrantes estás hoy.</p>
     <div class="dims">
       <div class="dim"><b>Mérito</b><span>Resultados, criterio, preparación y manejo de la presión.</span></div>
       <div class="dim"><b>Autoridad ejercida</b><span>Imagen, voz, límites y visibilidad.</span></div>
@@ -237,6 +237,7 @@ form{display:grid;gap:14px}
       <div class="rsub" id="rchar"></div>
     </div>
 
+    <p class="meta center" id="mailnote" hidden style="font-size:14px">💌 Revisa tu correo: te llegará tu tarjeta y tu siguiente paso.</p>
     <div class="gauges" id="gauges"></div>
 
     <div class="sect">Tu lugar en el mapa</div>
@@ -370,7 +371,7 @@ function choose(i, el, t){
   document.querySelectorAll(".hot").forEach(o => o.classList.remove("sel"));
   document.querySelectorAll(".ptxt").forEach(o => { o.classList.remove("sel"); o.textContent = "Elegir"; });
   el.classList.add("sel"); t.classList.add("sel"); t.textContent = "✓ Elegida";
-  setTimeout(() => { locked = false; if (cur < Q.length-1){ cur++; render(); } else { show("gate"); } }, 480);
+  setTimeout(() => { locked = false; if (cur < Q.length-1){ cur++; render(); } else if (KNOWN) { finishKnown(); } else { show("gate"); } }, 480);
 }
 
 function compute(){
@@ -473,6 +474,34 @@ let db = null, user = null, uid = null, isOwner = false;
 })();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/* Enlace personalizado desde tu correo: ?email=...&nombre=...  → no se vuelve a pedir el correo */
+const PARAMS = new URLSearchParams(location.search);
+const KNOWN = (() => {
+  const e = (PARAMS.get("email") || "").trim().toLowerCase();
+  if (!EMAIL_RE.test(e)) return null;
+  const n = (PARAMS.get("nombre") || PARAMS.get("name") || "").trim().slice(0, 80);
+  return { email: e, name: /[\[\]{}]/.test(n) ? "" : n };
+})();
+const SOURCE = KNOWN ? "email" : (PARAMS.get("src") || "directo").slice(0, 30);
+if (KNOWN && KNOWN.name) $("introLead").textContent = `${KNOWN.name}, 8 preguntas para descubrir en cuál de los cuatro cuadrantes estás hoy ✦`;
+
+async function saveLead(lead){
+  const jobs = [];
+  if (db && uid) jobs.push(db.doc("leads/" + uid).set(lead));
+  if (LEAD_WEBHOOK) jobs.push(fetch(LEAD_WEBHOOK, {method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body: JSON.stringify(lead)}));
+  await Promise.race([Promise.allSettled(jobs), new Promise(res => setTimeout(res, 6000))]);
+}
+
+async function finishKnown(){
+  const r = compute();
+  const lead = { name: KNOWN.name, email: KNOWN.email, role: "", consent: true, consentText: "Suscriptora existente",
+    type: r.key, typeName: TYPES[r.key].name, merit: r.merit, auth: r.auth,
+    answers: answers.map(a => KEYS[a]).join(""), createdAt: new Date().toISOString(), source: "email" };
+  results();
+  $("mailnote").hidden = false;
+  saveLead(lead);
+}
 $("leadform").addEventListener("submit", async ev => {
   ev.preventDefault();
   const name = $("f-name").value.trim(), email = $("f-email").value.trim().toLowerCase(), role = $("f-role").value;
@@ -487,10 +516,8 @@ $("leadform").addEventListener("submit", async ev => {
   const lead = { name, email, role, consent: true, consentText: "Ley 1581 de 2012 · v1",
     type: r.key, typeName: TYPES[r.key].name, merit: r.merit, auth: r.auth,
     answers: answers.map(a => KEYS[a]).join(""), createdAt: new Date().toISOString() };
-  const jobs = [];
-  if (db && uid) jobs.push(db.doc("leads/" + uid).set(lead));
-  if (LEAD_WEBHOOK) jobs.push(fetch(LEAD_WEBHOOK, {method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body: JSON.stringify(lead)}));
-  await Promise.race([Promise.allSettled(jobs), new Promise(res => setTimeout(res, 6000))]);
+  lead.source = SOURCE;
+  await saveLead(lead);
   btn.disabled = false; btn.textContent = "Revelar mi resultado";
   results();
 });
