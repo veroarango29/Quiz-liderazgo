@@ -189,10 +189,10 @@ form{display:grid;gap:14px}
     </div>
     <div class="teaser"><img src="assets/matriz.jpg" alt=""><div class="lock">Tu tipo de autoridad<small>Se revela en un clic</small></div></div>
     <form id="leadform" novalidate>
-      <label class="fld"><span>Nombre</span><input id="f-name" autocomplete="given-name" maxlength="80" placeholder="¿Cómo te llamas?"></label>
-      <label class="fld"><span>Correo electrónico</span><input id="f-email" type="email" autocomplete="email" maxlength="120" placeholder="tu@correo.com"></label>
+      <label class="fld"><span>Nombre</span><input id="f-name" name="first_name" autocomplete="given-name" maxlength="80" placeholder="¿Cómo te llamas?"></label>
+      <label class="fld"><span>Correo electrónico</span><input id="f-email" name="email" type="email" autocomplete="email" maxlength="120" placeholder="tu@correo.com"></label>
       <label class="fld"><span>¿En qué etapa estás?</span>
-        <select id="f-role">
+        <select id="f-role" name="cargo">
           <option value="">Elige una opción</option>
           <option>Profesional en crecimiento</option>
           <option>Coordinadora / Jefe</option>
