@@ -39,7 +39,15 @@ body{font-family:var(--sans);font-weight:300;min-height:100vh;
 .lead{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--cream-dim);line-height:1.35;max-width:420px;margin:0 auto}
 .cover{margin:-26px -22px 18px;border-bottom:1px solid var(--line)}
 .cover img{width:100%;display:block}
-body.on-intro .brand,body.on-intro .diamond{display:none}
+body.on-intro .brand,body.on-intro .diamond,body.on-quiz .brand,body.on-quiz .diamond{display:none}
+.qcard{position:relative;margin:0 -14px;container-type:inline-size;border-radius:16px;overflow:hidden}
+.qcard img{width:100%;display:block}
+.hot{position:absolute;background:transparent;border:0;border-radius:5.5cqw;cursor:pointer;transition:box-shadow .25s,background .25s;-webkit-tap-highlight-color:transparent}
+.hot:hover,.hot:focus-visible{outline:none;background:rgba(244,232,207,.06);box-shadow:0 0 0 2px rgba(244,232,207,.75),0 0 28px rgba(244,232,207,.25)}
+.hot.sel{background:rgba(201,164,90,.12);box-shadow:0 0 0 3px #c9a45a,0 0 40px rgba(201,164,90,.6)}
+.ptxt{position:absolute;display:grid;place-items:center;pointer-events:none;font-family:var(--serif);font-style:italic;font-weight:600;font-size:2.9cqw;color:#14200f;border-radius:99px;transition:background .25s,color .25s}
+.ptxt.sel{background:#14200f;color:#f4e8cf;box-shadow:0 0 0 2px #c9a45a}
+.hint{text-align:center;font-family:var(--serif);font-style:italic;color:var(--cream-dim);font-size:16px;margin-top:14px}
 .dims{margin-top:18px}
 .mosaic{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:22px 0}
 .mosaic img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
@@ -173,11 +181,8 @@ form{display:grid;gap:14px}
       <span class="dimtag" id="dimtag"></span>
     </div>
     <div class="progress" id="progress"></div>
-    <div class="center"><span class="pill">Quiz</span></div>
-    <div class="qhead"><span class="qnum" id="qnum"></span><h2 class="qtitle" id="qtitle"></h2></div>
-    <div class="visual"><img id="qimg" alt=""></div>
-    <p class="qtext" id="qtext"></p>
-    <div class="opts" id="opts"></div>
+    <div class="qcard" id="qcard"><img id="qfull" alt=""></div>
+    <p class="hint">Toca la opción que más se parece a ti ✦</p>
   </section>
 
   <!-- GATE -->
@@ -256,47 +261,48 @@ form{display:grid;gap:14px}
 
 <script>
 const Q = [
- {t:"The Receipts", d:"Mérito", img:"assets/q1.jpg",
+ {t:"The Receipts", d:"Mérito", img:"assets/q1-full.jpg",
   q:"Cuando revisas lo que has conseguido profesionalmente en los últimos dos años, ¿qué encuentras?",
   o:["Resultados concretos, proyectos que he sacado adelante y logros que puedo demostrar.",
      "He hecho muchas cosas y he aportado bastante, pero todavía me falta consolidar o medir algunos resultados.",
      "Siento que he estado ocupada, pero no tengo tan claro qué resultados concretos he construido."]},
- {t:"The Decision", d:"Mérito", img:"assets/q2.jpg",
+ {t:"The Decision", d:"Mérito", img:"assets/q2-full.jpg",
   q:"Cuando tienes que tomar una decisión importante y no tienes toda la información…",
   o:["Analizo el escenario, decido y puedo explicar mi razonamiento.",
      "Tengo una idea de qué hacer, pero después dudo o busco validación.",
      "Pospongo o prefiero que otros decidan."]},
- {t:"The Next Level", d:"Mérito", img:"assets/q3.jpg",
+ {t:"The Next Level", d:"Mérito", img:"assets/q3-full.jpg",
   q:"Si mañana te ofrecieran una posición de mayor responsabilidad, ¿qué tan preparada te sentirías?",
   o:["Estoy preparada. Tengo la experiencia, los conocimientos y el criterio para asumir ese siguiente nivel.",
      "Tengo una buena base, pero identifico algunas habilidades o conocimientos que todavía necesito fortalecer.",
      "Me entusiasmaría la oportunidad, pero honestamente sentiría que todavía me falta bastante preparación."]},
- {t:"Under Pressure", d:"Mérito", img:"assets/q4.jpg",
+ {t:"Under Pressure", d:"Mérito", img:"assets/q4-full.jpg",
   q:"Cuando las cosas se complican y estás bajo presión…",
   o:["Consigo mantener la claridad, priorizar y responder sin perder de vista lo importante.",
      "Respondo y saco las cosas adelante, pero termino agotada y con la sensación de estar sobreviviendo.",
      "Me cuesta organizarme, priorizar y mantener la calma. La presión termina afectando mi desempeño."]},
- {t:"First Impression", d:"Autoridad ejercida", img:"assets/q5.jpg",
+ {t:"First Impression", d:"Autoridad ejercida", img:"assets/q5-full.jpg",
   q:"Llegas a una reunión importante donde nadie te conoce. ¿Qué impresión crees que proyectas?",
   o:["Mi imagen, mi lenguaje corporal y mi comportamiento son coherentes con el nivel profesional que represento.",
      "Depende del contexto. Hay ocasiones en las que proyecto seguridad y otras en las que siento que mi imagen no comunica todo lo que soy.",
      "No pienso mucho en eso. Me concentro en hacer bien mi trabajo y espero que eso sea suficiente."]},
- {t:"Take the Floor", d:"Autoridad ejercida", img:"assets/q6.jpg",
+ {t:"Take the Floor", d:"Autoridad ejercida", img:"assets/q6-full.jpg",
   q:"Estás en una reunión de alto nivel. En el punto clave de la conversación, te piden tu opinión. ¿Cómo sueles tomar la palabra?",
   o:["Tomo la palabra con seguridad, expongo mi punto de vista de forma clara y aporto a la decisión.",
      "Participo, pero a veces espero demasiado, suavizo mi mensaje o dudo antes de intervenir.",
      "Generalmente prefiero escuchar, tomar nota y solo hablo si me lo piden directamente."]},
- {t:"The Art of No", d:"Autoridad ejercida", img:"assets/q7.jpg",
+ {t:"The Art of No", d:"Autoridad ejercida", img:"assets/q7-full.jpg",
   q:"¿Cómo estableces límites?",
   o:["Lo comunico con claridad, propongo alternativas cuando corresponde y mantengo el límite.",
      "Intento poner el límite, pero termino justificándome demasiado o sintiéndome culpable.",
      "Generalmente acepto, incluso cuando sé que no debería, para evitar incomodidades o conflictos."]},
- {t:"Name Recognition", d:"Autoridad ejercida", img:"assets/q8.jpg",
+ {t:"Name Recognition", d:"Autoridad ejercida", img:"assets/q8-full.jpg",
   q:"¿Qué tan visible es tu trabajo y tu criterio fuera de tu equipo inmediato?",
   o:["Mi nombre está asociado a resultados, temas o decisiones concretas. Personas de distintos niveles reconocen mi aporte y buscan mi opinión.",
      "Las personas que trabajan conmigo conocen mi capacidad, pero todavía no tengo mucha visibilidad en otros espacios.",
      "Siento que mi trabajo habla poco por mí fuera de mis responsabilidades inmediatas."]}
 ];
+const GEO = [{"pills": [[75.31, 51.45, 14.26, 5.03], [76.48, 64.71, 13.26, 5.03], [75.48, 79.19, 14.35, 5.03]], "rows": [[6.67, 48.02, 86.74, 11.89], [6.67, 61.28, 86.74, 11.89], [6.67, 75.76, 86.74, 11.89]]}, {"pills": [[76.81, 50.46, 13.51, 5.03], [77.06, 64.79, 13.09, 5.03], [76.98, 79.19, 13.26, 5.03]], "rows": [[6.67, 47.03, 86.74, 11.89], [6.67, 61.36, 86.74, 11.89], [6.67, 75.76, 86.74, 11.89]]}, {"pills": [[77.06, 51.52, 13.18, 5.03], [77.15, 64.94, 13.09, 5.03], [76.98, 79.19, 13.26, 5.03]], "rows": [[6.67, 48.09, 86.74, 11.89], [6.67, 61.51, 86.74, 11.89], [6.67, 75.76, 86.74, 11.89]]}, {"pills": [[76.06, 52.36, 13.93, 5.03], [76.81, 65.85, 13.18, 5.03], [76.06, 79.42, 13.84, 5.03]], "rows": [[6.67, 48.93, 86.74, 11.89], [6.67, 62.42, 86.74, 11.89], [6.67, 75.99, 86.74, 11.89]]}, {"pills": [[77.48, 51.68, 12.93, 5.03], [77.73, 65.4, 12.68, 5.03], [77.31, 79.5, 13.18, 5.03]], "rows": [[6.67, 48.25, 86.74, 11.89], [6.67, 61.97, 86.74, 11.89], [6.67, 76.07, 86.74, 11.89]]}, {"pills": [[77.31, 50.69, 13.09, 5.03], [77.48, 65.4, 12.76, 5.03], [77.56, 79.5, 12.68, 5.03]], "rows": [[6.67, 47.26, 86.74, 11.89], [6.67, 61.97, 86.74, 11.89], [6.67, 76.07, 86.74, 11.89]]}, {"pills": [[78.82, 51.07, 12.01, 5.03], [78.9, 65.85, 11.76, 5.03], [78.82, 80.03, 11.93, 5.03]], "rows": [[6.67, 47.64, 86.74, 11.89], [6.67, 62.42, 86.74, 11.89], [6.67, 76.6, 86.74, 11.89]]}, {"pills": [[78.4, 51.37, 12.84, 5.03], [78.57, 66.77, 12.43, 5.03], [78.65, 80.79, 12.43, 5.03]], "rows": [[6.67, 47.94, 86.74, 11.89], [6.67, 63.34, 86.74, 11.89], [6.67, 77.36, 86.74, 11.89]]}];
 const PTS = [2,1,0], KEYS = ["A","B","C"];
 
 const TYPES = {
@@ -330,33 +336,40 @@ Q.forEach(q => { const i = new Image(); i.src = q.img; });
 Object.values(TYPES).forEach(t => { const i = new Image(); i.src = t.img; });
 $("progress").innerHTML = Q.map(() => "<i></i>").join("");
 
-function show(id){ document.body.classList.toggle("on-intro", id==="intro"); document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id)); window.scrollTo({top:0,behavior:"smooth"}); }
+function show(id){ document.body.classList.toggle("on-intro", id==="intro"); document.body.classList.toggle("on-quiz", id==="quiz"); document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id)); window.scrollTo({top:0,behavior:"smooth"}); }
 
 function render(){
-  const q = Q[cur];
-  $("qnum").textContent = String(cur+1).padStart(2,"0") + ".";
-  $("qtitle").textContent = q.t;
-  $("qtext").textContent = q.q;
-  $("qimg").src = q.img;
+  const q = Q[cur], g = GEO[cur];
+  $("qfull").src = q.img;
+  $("qfull").alt = `${String(cur+1).padStart(2,"0")}. ${q.t}: ${q.q}`;
   $("dimtag").textContent = q.d;
   $("back").classList.toggle("show", cur > 0);
   [...$("progress").children].forEach((el,i) => el.className = answers[i] !== null && i !== cur ? "done" : i === cur ? "now" : "");
-  $("opts").innerHTML = "";
+  const card = $("qcard");
+  card.querySelectorAll(".hot,.ptxt").forEach(n => n.remove());
   q.o.forEach((txt,i) => {
+    const [rx,ry,rw,rh] = g.rows[i], [px,py,pw,ph] = g.pills[i];
+    const sel = answers[cur] === i;
     const b = document.createElement("button");
-    b.className = "opt" + (answers[cur] === i ? " sel" : "");
-    b.innerHTML = `<span class="k">${KEYS[i]}</span><span class="t">${txt}</span>`;
-    b.onclick = () => choose(i, b);
-    $("opts").appendChild(b);
+    b.className = "hot" + (sel ? " sel" : "");
+    b.style.cssText = `left:${rx}%;top:${ry}%;width:${rw}%;height:${rh}%`;
+    b.setAttribute("aria-label", `${KEYS[i]}: ${txt}`);
+    const t = document.createElement("span");
+    t.className = "ptxt" + (sel ? " sel" : "");
+    t.style.cssText = `left:${px}%;top:${py}%;width:${pw}%;height:${ph}%`;
+    t.textContent = sel ? "✓ Elegida" : "Elegir";
+    b.onclick = () => choose(i, b, t);
+    card.append(b, t);
   });
   const qs = $("quiz"); qs.classList.remove("on"); void qs.offsetWidth; qs.classList.add("on");
 }
 
-function choose(i, el){
+function choose(i, el, t){
   if (locked) return; locked = true;
   answers[cur] = i;
-  document.querySelectorAll(".opt").forEach(o => o.classList.remove("sel"));
-  el.classList.add("sel");
+  document.querySelectorAll(".hot").forEach(o => o.classList.remove("sel"));
+  document.querySelectorAll(".ptxt").forEach(o => { o.classList.remove("sel"); o.textContent = "Elegir"; });
+  el.classList.add("sel"); t.classList.add("sel"); t.textContent = "✓ Elegida";
   setTimeout(() => { locked = false; if (cur < Q.length-1){ cur++; render(); } else { show("gate"); } }, 480);
 }
 
