@@ -118,6 +118,33 @@ body.on-intro .brand,body.on-intro .diamond{display:none}
 .actions{display:grid;gap:10px;margin-top:22px}
 .footer{text-align:center;margin-top:22px;font-family:var(--serif);font-style:italic;color:var(--cream-dim);font-size:15px}
 .mono{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--gold);font-size:22px;display:block;margin-top:6px;letter-spacing:.05em}
+/* gate */
+.teaser{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);margin:18px 0}
+.teaser img{width:100%;height:170px;object-fit:cover;display:block;filter:blur(7px) brightness(.55);transform:scale(1.06)}
+.teaser .lock{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-family:var(--serif);font-style:italic;font-size:24px;padding:20px}
+.teaser .lock small{display:block;font-family:var(--sans);font-style:normal;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:6px}
+form{display:grid;gap:14px}
+.fld{display:grid;gap:6px}
+.fld span{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-dim)}
+.fld input,.fld select{width:100%;font:inherit;font-size:16px;color:var(--cream);background:rgba(244,232,207,.06);border:1px solid rgba(244,232,207,.35);border-radius:14px;padding:13px 14px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.fld select{background-image:linear-gradient(45deg,transparent 50%,var(--cream) 50%),linear-gradient(135deg,var(--cream) 50%,transparent 50%);background-position:calc(100% - 20px) 55%,calc(100% - 14px) 55%;background-size:6px 6px;background-repeat:no-repeat}
+.fld select option{background:#0b2410;color:var(--cream)}
+.fld input:focus,.fld select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,164,90,.18)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:var(--cream-dim);cursor:pointer}
+.chk input{flex:none;width:18px;height:18px;margin-top:2px;accent-color:#c9a45a}
+.err{min-height:18px;font-size:13px;color:#f0b8a8;text-align:center}
+.btn[disabled]{opacity:.6;cursor:wait}
+/* leads panel */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.kpi{border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;background:linear-gradient(180deg,var(--card),transparent)}
+.kpi b{display:block;font-family:var(--serif);font-size:32px;font-weight:600;line-height:1}
+.kpi span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-dim)}
+.ltable{width:100%;border-collapse:collapse;font-size:13px}
+.ltable th{text-align:left;font-weight:400;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);padding:8px 6px;border-bottom:1px solid var(--line)}
+.ltable td{padding:9px 6px;border-bottom:1px solid rgba(244,232,207,.08);vertical-align:top;word-break:break-word}
+.ltable td small{display:block;color:var(--cream-dim)}
+.lwrap{overflow-x:auto}
+.empty{text-align:center;color:var(--cream-dim);font-family:var(--serif);font-style:italic;font-size:18px;padding:22px 0}
 @media (max-width:400px){.frame{padding:22px 14px 26px}.cover{margin:-22px -14px 16px}.opt{font-size:17px;padding:12px 12px}.bar{grid-template-columns:96px 1fr 30px}.visual{height:180px}}
 </style>
 </head>
@@ -136,6 +163,7 @@ body.on-intro .brand,body.on-intro .diamond{display:none}
     </div>
     <button class="btn" id="start">Empezar</button>
     <p class="meta">≈ 2 minutos · Responde con total honestidad ✦</p>
+    <button class="btn ghost" id="openLeads" hidden style="margin-top:18px;font-size:14px">Panel de leads · solo tú</button>
   </section>
 
   <!-- QUESTION -->
@@ -150,6 +178,50 @@ body.on-intro .brand,body.on-intro .diamond{display:none}
     <div class="visual"><img id="qimg" alt=""></div>
     <p class="qtext" id="qtext"></p>
     <div class="opts" id="opts"></div>
+  </section>
+
+  <!-- GATE -->
+  <section id="gate" class="screen">
+    <div class="center">
+      <span class="pill">Tu resultado está listo</span>
+      <h2 class="rtitle">Ya sabemos en qué<br>cuadrante estás ✦</h2>
+      <p class="lead">Déjame tus datos para revelarlo y recibir contenido exclusivo para mujeres que lideran.</p>
+    </div>
+    <div class="teaser"><img src="assets/matriz.jpg" alt=""><div class="lock">Tu tipo de autoridad<small>Se revela en un clic</small></div></div>
+    <form id="leadform" novalidate>
+      <label class="fld"><span>Nombre</span><input id="f-name" autocomplete="given-name" maxlength="80" placeholder="¿Cómo te llamas?"></label>
+      <label class="fld"><span>Correo electrónico</span><input id="f-email" type="email" autocomplete="email" maxlength="120" placeholder="tu@correo.com"></label>
+      <label class="fld"><span>¿En qué etapa estás?</span>
+        <select id="f-role">
+          <option value="">Elige una opción</option>
+          <option>Profesional en crecimiento</option>
+          <option>Coordinadora / Jefe</option>
+          <option>Gerente / Directora</option>
+          <option>C-level / Vicepresidenta</option>
+          <option>Miembro de junta directiva</option>
+          <option>Emprendedora / Empresaria</option>
+          <option>Sector público</option>
+        </select></label>
+      <label class="chk"><input type="checkbox" id="f-consent"><span>Autorizo el tratamiento de mis datos personales para recibir mi resultado y contenido de Verónica Arango, conforme a la Ley 1581 de 2012. Puedo pedir que se eliminen en cualquier momento.</span></label>
+      <p class="err" id="f-err" role="alert"></p>
+      <button class="btn" type="submit" id="f-submit">Revelar mi resultado</button>
+    </form>
+  </section>
+
+  <!-- LEADS (owner only) -->
+  <section id="leads" class="screen">
+    <div class="center"><span class="pill">Panel privado</span><h2 class="rtitle">Tus leads ✦</h2><div class="rsub">Solo tú puedes ver esta información</div></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="sect">Distribución por tipo</div>
+    <div class="bars" id="ltypes"></div>
+    <div class="sect">Por etapa profesional</div>
+    <div class="bars" id="lroles"></div>
+    <div class="sect">Registros</div>
+    <div class="lwrap"><table class="ltable"><thead><tr><th>Nombre</th><th>Correo</th><th>Tipo</th><th>Fecha</th></tr></thead><tbody id="lrows"></tbody></table></div>
+    <div class="actions">
+      <button class="btn" id="csv">Descargar CSV</button>
+      <button class="btn ghost" id="closeLeads">Volver al quiz</button>
+    </div>
   </section>
 
   <!-- RESULT -->
@@ -285,7 +357,15 @@ function choose(i, el){
   answers[cur] = i;
   document.querySelectorAll(".opt").forEach(o => o.classList.remove("sel"));
   el.classList.add("sel");
-  setTimeout(() => { locked = false; if (cur < Q.length-1){ cur++; render(); } else results(); }, 480);
+  setTimeout(() => { locked = false; if (cur < Q.length-1){ cur++; render(); } else { show("gate"); } }, 480);
+}
+
+function compute(){
+  const pts = answers.map(a => PTS[a]);
+  const merit = pts.slice(0,4).reduce((a,b)=>a+b,0);
+  const auth  = pts.slice(4).reduce((a,b)=>a+b,0);
+  const key = merit >= 5 && auth >= 5 ? "room" : merit >= 5 ? "hidden" : auth >= 5 ? "pretty" : "under";
+  return {pts, merit, auth, key};
 }
 
 function results(){
@@ -362,6 +442,81 @@ function drawMap(m, a, key){
   $("mapsvg").innerHTML = s;
   requestAnimationFrame(() => setTimeout(() => { $("dot").style.transform = `translate(${px}px,${py}px)`; $("you").setAttribute("opacity","1"); }, 250));
 }
+
+/* ---------- leads ---------- */
+// Opcional: URL de un formulario externo (Formspree, Make, Zapier, Google Apps Script…) para la versión pública.
+const LEAD_WEBHOOK = "";
+let db = null, user = null, uid = null, isOwner = false;
+(async () => {
+  const use = window.claude && window.claude.use;
+  if (!use) return;
+  try { user = await window.claude.use("user"); } catch(e) {}
+  try { db = await window.claude.use("db"); } catch(e) {}
+  if (user) {
+    try { uid = await user.id(); } catch(e) {}
+    try { isOwner = await user.isOwner(); } catch(e) {}
+    if (isOwner && db) $("openLeads").hidden = false;
+  }
+})();
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+$("leadform").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const name = $("f-name").value.trim(), email = $("f-email").value.trim().toLowerCase(), role = $("f-role").value;
+  const err = $("f-err");
+  if (!name) { err.textContent = "Cuéntame tu nombre ✦"; $("f-name").focus(); return; }
+  if (!EMAIL_RE.test(email)) { err.textContent = "Revisa tu correo, parece incompleto."; $("f-email").focus(); return; }
+  if (!role) { err.textContent = "Elige la etapa en la que estás."; $("f-role").focus(); return; }
+  if (!$("f-consent").checked) { err.textContent = "Necesito tu autorización para tratar tus datos."; return; }
+  err.textContent = "";
+  const btn = $("f-submit"); btn.disabled = true; btn.textContent = "Revelando…";
+  const r = compute();
+  const lead = { name, email, role, consent: true, consentText: "Ley 1581 de 2012 · v1",
+    type: r.key, typeName: TYPES[r.key].name, merit: r.merit, auth: r.auth,
+    answers: answers.map(a => KEYS[a]).join(""), createdAt: new Date().toISOString() };
+  const jobs = [];
+  if (db && uid) jobs.push(db.doc("leads/" + uid).set(lead));
+  if (LEAD_WEBHOOK) jobs.push(fetch(LEAD_WEBHOOK, {method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body: JSON.stringify(lead)}));
+  await Promise.race([Promise.allSettled(jobs), new Promise(res => setTimeout(res, 6000))]);
+  btn.disabled = false; btn.textContent = "Revelar mi resultado";
+  results();
+});
+
+let leadRows = [];
+function esc(t){ return String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function distBars(el, counts, total){
+  const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  el.innerHTML = entries.length ? entries.map(([k,v]) => `
+    <div class="bar"><span class="n">${esc(k)}</span><span class="track"><span class="fill" data-w="${total? v/total*100 : 0}"></span></span><span class="p">${v}</span></div>`).join("") : '<p class="empty">Aún no hay datos.</p>';
+  setTimeout(() => el.querySelectorAll(".fill").forEach(f => f.style.width = f.dataset.w + "%"), 120);
+}
+async function openLeads(){
+  show("leads");
+  $("lrows").innerHTML = '<tr><td colspan="4" class="empty">Cargando…</td></tr>';
+  try {
+    const snap = await db.collection("leads").orderBy("createdAt","desc").limit(1000).get();
+    leadRows = snap.docs.map(d => d.data()).filter(Boolean);
+  } catch(e) { leadRows = []; $("lrows").innerHTML = '<tr><td colspan="4" class="empty">No pude cargar los leads.</td></tr>'; return; }
+  const total = leadRows.length;
+  const byType = {}, byRole = {};
+  Object.values(TYPES).forEach(t => byType[t.name] = 0);
+  leadRows.forEach(l => { byType[l.typeName] = (byType[l.typeName]||0) + 1; byRole[l.role||"—"] = (byRole[l.role||"—"]||0) + 1; });
+  const week = leadRows.filter(l => Date.now() - Date.parse(l.createdAt) < 7*864e5).length;
+  const top = Object.entries(byType).sort((a,b)=>b[1]-a[1])[0];
+  $("kpis").innerHTML = `<div class="kpi"><b>${total}</b><span>Leads</span></div><div class="kpi"><b>${week}</b><span>Últimos 7 días</span></div><div class="kpi"><b>${total? Math.round(top[1]/total*100):0}%</b><span>${total? esc(top[0]) : "Tipo líder"}</span></div>`;
+  distBars($("ltypes"), byType, total);
+  distBars($("lroles"), byRole, total);
+  $("lrows").innerHTML = total ? leadRows.map(l => `<tr><td>${esc(l.name)}<small>${esc(l.role)}</small></td><td>${esc(l.email)}</td><td>${esc(l.typeName)}<small>M ${l.merit}/8 · A ${l.auth}/8</small></td><td>${esc((l.createdAt||"").slice(0,10))}</td></tr>`).join("") : '<tr><td colspan="4" class="empty">Todavía no hay registros. Comparte tu quiz ✦</td></tr>';
+}
+$("openLeads").onclick = openLeads;
+$("closeLeads").onclick = () => show("intro");
+$("csv").onclick = async () => {
+  if (!leadRows.length) return;
+  const cols = ["createdAt","name","email","role","typeName","merit","auth","answers","consentText"];
+  const q = v => '"' + String(v ?? "").replace(/"/g,'""') + '"';
+  const csv = "\ufeff" + cols.join(",") + "\n" + leadRows.map(l => cols.map(c => q(l[c])).join(",")).join("\n");
+  try { const dl = await window.claude.use("downloads"); if (dl) await dl.save({filename:"authority-map-leads.csv", data: csv}); } catch(e) {}
+};
 
 $("start").onclick = () => { cur = 0; show("quiz"); render(); };
 $("back").onclick = () => { if (cur > 0){ cur--; render(); } };
