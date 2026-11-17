@@ -231,25 +231,12 @@ form{display:grid;gap:14px}
 
   <!-- RESULT -->
   <section id="result" class="screen">
-    <div class="center">
-      <span class="pill">Your Authority Type</span>
-      <h2 class="rtitle" id="rtype"></h2>
-      <div class="rsub" id="rchar"></div>
-    </div>
+    <div class="center"><span class="pill">Your Score</span></div>
 
     <p class="meta center" id="mailnote" hidden style="font-size:14px">💌 Revisa tu correo: te llegará tu tarjeta y tu siguiente paso.</p>
     <div class="gauges" id="gauges"></div>
 
-    <div class="sect">Tu lugar en el mapa</div>
-    <div class="map"><svg id="mapsvg" viewBox="0 0 340 340" role="img" aria-label="Mapa Mérito por Autoridad ejercida"></svg></div>
 
-    <div class="sect">Tu puntaje, pregunta por pregunta</div>
-    <div class="bars" id="bars"></div>
-
-    <div class="sect">Lo que dice de ti</div>
-    <div class="blocks" id="blocks"></div>
-
-    <div class="sect">Tu tarjeta</div>
     <div class="typecard"><img id="rimg" alt=""></div>
 
     <div class="actions">
@@ -391,8 +378,6 @@ function results(){
   const T = TYPES[key];
   show("result");
 
-  $("rtype").textContent = T.name;
-  $("rchar").textContent = T.ch;
   $("rimg").src = T.img; $("rimg").alt = "Tarjeta " + T.name;
 
   // gauges
@@ -406,17 +391,6 @@ function results(){
     </div>`).join("");
   requestAnimationFrame(() => setTimeout(() => document.querySelectorAll(".ring").forEach(r => r.style.strokeDashoffset = C*(1 - r.dataset.v/8)), 120));
 
-  // map
-  drawMap(merit, auth, key);
-
-  // bars
-  $("bars").innerHTML = Q.map((q,i) => (i===4?'<div class="bar split"></div>':'') + `
-    <div class="bar"><span class="n">${String(i+1).padStart(2,"0")} · ${q.t}</span><span class="track"><span class="fill" data-w="${pts[i]/2*100}"></span></span><span class="p">${pts[i]}/2</span></div>`).join("");
-  setTimeout(() => document.querySelectorAll(".fill").forEach(f => f.style.width = f.dataset.w + "%"), 200);
-
-  $("blocks").innerHTML = `
-    <div class="block"><span class="pill">What this says about you</span><h3>${T.h1}</h3><p>${T.p1}</p></div>
-    <div class="block"><span class="pill">Your next move</span><h3>${T.h2}</h3><p>${T.p2}</p></div>`;
 }
 
 function drawMap(m, a, key){
