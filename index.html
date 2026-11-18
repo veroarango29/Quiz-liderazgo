@@ -452,7 +452,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 /* Enlace personalizado desde tu correo: ?email=...&nombre=...  → no se vuelve a pedir el correo */
 const PARAMS = new URLSearchParams(location.search);
 const KNOWN = (() => {
-  const e = (PARAMS.get("email") || "").trim().toLowerCase();
+  const e = (PARAMS.get("email") || "").trim().replace(/ /g, "+").toLowerCase();
   if (!EMAIL_RE.test(e)) return null;
   const n = (PARAMS.get("nombre") || PARAMS.get("name") || "").trim().slice(0, 80);
   return { email: e, name: /[\[\]{}]/.test(n) ? "" : n };
