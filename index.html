@@ -233,7 +233,6 @@ form{display:grid;gap:14px}
   <section id="result" class="screen">
     <div class="center"><span class="pill">Your Score</span></div>
 
-    <p class="meta center" id="mailnote" hidden style="font-size:14px">💌 Revisa tu correo: te llegará tu tarjeta y tu siguiente paso.</p>
     <div class="gauges" id="gauges"></div>
 
 
@@ -473,7 +472,6 @@ async function finishKnown(){
     type: r.key, typeName: TYPES[r.key].name, merit: r.merit, auth: r.auth,
     answers: answers.map(a => KEYS[a]).join(""), createdAt: new Date().toISOString(), source: "email" };
   results();
-  $("mailnote").hidden = false;
   saveLead(lead);
 }
 $("leadform").addEventListener("submit", async ev => {
