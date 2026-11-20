@@ -217,7 +217,7 @@ form{display:grid;gap:14px}
           <option>Emprendedora / Empresaria</option>
           <option>Sector público</option>
         </select></label>
-      <label class="chk"><input type="checkbox" id="f-consent"><span>Autorizo el tratamiento de mis datos personales (nombre, correo y respuestas) para generar y mostrarme mi resultado, conforme a la Ley 1581 de 2012.</span></label>
+      <label class="chk"><input type="checkbox" id="f-consent"><span>Autorizo el tratamiento de mis datos personales conforme a la Ley 1581 de 2012.</span></label>
       <p class="err" id="f-err" role="alert"></p>
       <button class="btn" type="submit" id="f-submit">Revelar mi resultado</button>
     </form>
@@ -531,7 +531,7 @@ $("leadform").addEventListener("submit", async ev => {
   err.textContent = "";
   const btn = $("f-submit"); btn.disabled = true; btn.textContent = "Revelando…";
   const r = compute();
-  const lead = { name, email, role, consent: true, consentText: "Ley 1581 de 2012 · v2 (solo para entregar el resultado)",
+  const lead = { name, email, role, consent: true, consentText: "Autorización de tratamiento de datos · Ley 1581 de 2012",
     type: r.key, typeName: TYPES[r.key].name, merit: r.merit, auth: r.auth,
     answers: answers.map(a => KEYS[a]).join(""), createdAt: new Date().toISOString() };
   lead.source = SOURCE;
