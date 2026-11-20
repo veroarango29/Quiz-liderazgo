@@ -155,7 +155,8 @@ form{display:grid;gap:14px}
 .join{margin-top:18px;border:1.5px solid rgba(244,232,207,.45);border-radius:20px;padding:20px 18px;text-align:center;background:linear-gradient(180deg,#123a1a,#0b2410)}
 .join h3{font-family:var(--serif);font-style:italic;font-weight:600;font-size:28px;line-height:1.1;margin:12px 0 8px}
 .join p{font-size:15px;line-height:1.55;color:var(--cream-dim);margin-bottom:16px}
-.join .jlead{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--cream);margin-bottom:8px}
+.join .jlead{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.35;color:var(--cream);margin-bottom:12px}
+.join .jdate{font-family:var(--serif);font-weight:600;font-size:21px;letter-spacing:.04em;color:var(--gold);margin-bottom:12px}
 .join .jconsent{margin:0 0 14px}
 #joinBtn{font-size:16px;letter-spacing:.12em}
 .join small{display:block;margin-top:12px;font-size:12px;line-height:1.5;color:var(--cream-dim)}
@@ -216,7 +217,7 @@ form{display:grid;gap:14px}
           <option>Emprendedora / Empresaria</option>
           <option>Sector público</option>
         </select></label>
-      <label class="chk"><input type="checkbox" id="f-consent"><span>Autorizo el tratamiento de mis datos personales para generar y mostrarme mi resultado, conforme a la Ley 1581 de 2012. No los usarán para nada más, salvo que yo decida unirme después a The Authority Map. Puedo pedir que se eliminen en cualquier momento.</span></label>
+      <label class="chk"><input type="checkbox" id="f-consent"><span>Autorizo el tratamiento de mis datos personales (nombre, correo y respuestas) para generar y mostrarme mi resultado, conforme a la Ley 1581 de 2012.</span></label>
       <p class="err" id="f-err" role="alert"></p>
       <button class="btn" type="submit" id="f-submit">Revelar mi resultado</button>
     </form>
@@ -249,14 +250,15 @@ form{display:grid;gap:14px}
 
     <div class="join" id="join" hidden>
       <div id="joinAsk">
-        <span class="pill">Comunidad</span>
-        <h3>¿Quieres desarrollar tu arquetipo?</h3>
-        <p class="jlead">Inscríbete en The Authority Map</p>
+        <span class="pill">Evento gratuito</span>
+        <h3>¿Quieres desarrollar tu tipo de autoridad?</h3>
+        <p class="jdate">24, 25 y 26 de noviembre</p>
         <p id="joinText"></p>
-        <small class="jconsent">Al inscribirme autorizo que Verónica Arango me escriba al correo que ya registré para compartirme contenido de The Authority Map. Puedo darme de baja cuando quiera.</small>
-        <button class="btn" id="joinBtn" type="button">Sí, quiero inscribirme</button>
+        <p class="jlead">Si quieres recibir más información sobre este evento gratuito, da clic aquí para agregarte a la lista de información.</p>
+        <small class="jconsent">Al agregarme autorizo que Verónica Arango me escriba al correo que ya registré para enviarme información sobre el evento.</small>
+        <button class="btn" id="joinBtn" type="button">Agregarme a la lista</button>
       </div>
-      <p id="joinOk" hidden>Ya estás inscrita en The Authority Map ✦<small>Gracias por confiar.</small></p>
+      <p id="joinOk" hidden>Listo, ya estás en la lista de información ✦<small>Pronto te escribiré con los detalles del evento.</small></p>
     </div>
 
     <div class="actions">
@@ -489,23 +491,23 @@ async function saveLead(lead){
 
 let joinLead = null;
 const JOIN_TEXT = {
-  room:   "Eres The Room Knows. Aprende a sostener tu autoridad sin cargar con todo: delegar, poner límites y cuidar tu energía.",
-  hidden: "Eres The Hidden Asset. Aprende a hacer visible tu criterio y a ocupar el espacio que corresponde a tu capacidad.",
-  pretty: "Eres The Pretty Package. Aprende a convertir tu presencia en sustancia, con preparación, resultados y criterio.",
-  under:  "Estás en Under Construction. Aprende a construir una trayectoria con dirección y a priorizar lo que de verdad te acerca a tus metas."
+  room:   "Eres The Room Knows: tu siguiente paso es sostener tu autoridad sin cargar con todo.",
+  hidden: "Eres The Hidden Asset: tu siguiente paso es hacer visible tu criterio y ocupar el espacio que te corresponde.",
+  pretty: "Eres The Pretty Package: tu siguiente paso es convertir tu presencia en sustancia.",
+  under:  "Estás en Under Construction: tu siguiente paso es construir una trayectoria con dirección."
 };
 function showJoin(lead){
   joinLead = lead;
   $("joinText").textContent = JOIN_TEXT[lead.type] || "";
   $("joinAsk").hidden = false; $("joinOk").hidden = true;
-  $("joinBtn").disabled = false; $("joinBtn").textContent = "Sí, quiero inscribirme";
+  $("joinBtn").disabled = false; $("joinBtn").textContent = "Agregarme a la lista";
   $("join").hidden = false;
 }
 $("joinBtn").onclick = async () => {
   if (!joinLead) return;
-  const btn = $("joinBtn"); btn.disabled = true; btn.textContent = "Inscribiéndote…";
+  const btn = $("joinBtn"); btn.disabled = true; btn.textContent = "Agregándote…";
   await saveLead({ ...joinLead, source: "optin-lista", optin: true,
-    consentText: "Aceptó recibir correos de The Authority Map (botón en pantalla de resultado)",
+    consentText: "Pidió información del evento gratuito 24-26 nov (botón en pantalla de resultado)",
     createdAt: new Date().toISOString() });
   $("joinAsk").hidden = true; $("joinOk").hidden = false;
 };
