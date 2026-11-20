@@ -152,6 +152,12 @@ form{display:grid;gap:14px}
 .ltable td{padding:9px 6px;border-bottom:1px solid rgba(244,232,207,.08);vertical-align:top;word-break:break-word}
 .ltable td small{display:block;color:var(--cream-dim)}
 .lwrap{overflow-x:auto}
+.join{margin-top:18px;border:1.5px solid rgba(244,232,207,.45);border-radius:20px;padding:20px 18px;text-align:center;background:linear-gradient(180deg,#123a1a,#0b2410)}
+.join h3{font-family:var(--serif);font-style:italic;font-weight:600;font-size:28px;line-height:1.1;margin:12px 0 8px}
+.join p{font-size:15px;line-height:1.55;color:var(--cream-dim);margin-bottom:16px}
+.join small{display:block;margin-top:12px;font-size:12px;line-height:1.5;color:var(--cream-dim)}
+#joinOk{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--cream);margin:0}
+#joinOk small{font-family:var(--sans);font-style:normal}
 .empty{text-align:center;color:var(--cream-dim);font-family:var(--serif);font-style:italic;font-size:18px;padding:22px 0}
 @media (max-width:400px){.frame{padding:22px 14px 26px}.cover{margin:-22px -14px 16px}.opt{font-size:17px;padding:12px 12px}.bar{grid-template-columns:96px 1fr 30px}.visual{height:180px}}
 </style>
@@ -190,7 +196,7 @@ form{display:grid;gap:14px}
     <div class="center">
       <span class="pill">Tu resultado está listo</span>
       <h2 class="rtitle">Ya sabemos en qué<br>cuadrante estás ✦</h2>
-      <p class="lead">Déjame tus datos para revelarlo y recibir contenido exclusivo para mujeres que lideran.</p>
+      <p class="lead">Déjame tus datos para revelar tu resultado.</p>
     </div>
     <div class="teaser"><img src="assets/matriz.jpg" alt=""><div class="lock">Tu tipo de autoridad<small>Se revela en un clic</small></div></div>
     <form id="leadform" novalidate>
@@ -207,7 +213,7 @@ form{display:grid;gap:14px}
           <option>Emprendedora / Empresaria</option>
           <option>Sector público</option>
         </select></label>
-      <label class="chk"><input type="checkbox" id="f-consent"><span>Autorizo el tratamiento de mis datos personales para recibir mi resultado y contenido de Verónica Arango, conforme a la Ley 1581 de 2012. Puedo pedir que se eliminen en cualquier momento.</span></label>
+      <label class="chk"><input type="checkbox" id="f-consent"><span>Autorizo el tratamiento de mis datos personales para generar y mostrarme mi resultado, conforme a la Ley 1581 de 2012. No los usarán para nada más, salvo que yo decida unirme después a The Authority Map. Puedo pedir que se eliminen en cualquier momento.</span></label>
       <p class="err" id="f-err" role="alert"></p>
       <button class="btn" type="submit" id="f-submit">Revelar mi resultado</button>
     </form>
@@ -237,6 +243,17 @@ form{display:grid;gap:14px}
 
 
     <div class="typecard"><img id="rimg" alt=""></div>
+
+    <div class="join" id="join" hidden>
+      <div id="joinAsk">
+        <span class="pill">Comunidad</span>
+        <h3>Únete a The Authority Map</h3>
+        <p>Contenido de Verónica sobre liderazgo, visibilidad y comunicación para mujeres que toman decisiones.</p>
+        <button class="btn" id="joinBtn" type="button">Sí, quiero unirme</button>
+        <small>Al unirme autorizo que Verónica Arango me escriba al correo que ya registré. Puedo darme de baja cuando quiera.</small>
+      </div>
+      <p id="joinOk" hidden>Ya eres parte de The Authority Map ✦<small>Gracias por confiar.</small></p>
+    </div>
 
     <div class="actions">
       <p class="meta center" style="margin:0 0 4px">✦ Mantén presionada tu tarjeta para guardarla y compartirla en stories</p>
@@ -466,6 +483,22 @@ async function saveLead(lead){
   await Promise.race([Promise.allSettled(jobs), new Promise(res => setTimeout(res, 6000))]);
 }
 
+let joinLead = null;
+function showJoin(lead){
+  joinLead = lead;
+  $("joinAsk").hidden = false; $("joinOk").hidden = true;
+  $("joinBtn").disabled = false; $("joinBtn").textContent = "Sí, quiero unirme";
+  $("join").hidden = false;
+}
+$("joinBtn").onclick = async () => {
+  if (!joinLead) return;
+  const btn = $("joinBtn"); btn.disabled = true; btn.textContent = "Uniéndote…";
+  await saveLead({ ...joinLead, source: "optin-lista", optin: true,
+    consentText: "Aceptó recibir correos de The Authority Map (botón en pantalla de resultado)",
+    createdAt: new Date().toISOString() });
+  $("joinAsk").hidden = true; $("joinOk").hidden = false;
+};
+
 async function finishKnown(){
   const r = compute();
   const lead = { name: KNOWN.name, email: KNOWN.email, role: "", consent: true, consentText: "Suscriptora existente",
@@ -485,13 +518,14 @@ $("leadform").addEventListener("submit", async ev => {
   err.textContent = "";
   const btn = $("f-submit"); btn.disabled = true; btn.textContent = "Revelando…";
   const r = compute();
-  const lead = { name, email, role, consent: true, consentText: "Ley 1581 de 2012 · v1",
+  const lead = { name, email, role, consent: true, consentText: "Ley 1581 de 2012 · v2 (solo para entregar el resultado)",
     type: r.key, typeName: TYPES[r.key].name, merit: r.merit, auth: r.auth,
     answers: answers.map(a => KEYS[a]).join(""), createdAt: new Date().toISOString() };
   lead.source = SOURCE;
   await saveLead(lead);
   btn.disabled = false; btn.textContent = "Revelar mi resultado";
   results();
+  showJoin(lead);
 });
 
 let leadRows = [];
@@ -532,7 +566,7 @@ $("csv").onclick = async () => {
 
 $("start").onclick = () => { cur = 0; show("quiz"); render(); };
 $("back").onclick = () => { if (cur > 0){ cur--; render(); } };
-$("restart").onclick = () => { answers.fill(null); cur = 0; show("intro"); };
+$("restart").onclick = () => { joinLead = null; $("join").hidden = true; answers.fill(null); cur = 0; show("intro"); };
 </script>
 </body>
 </html>
