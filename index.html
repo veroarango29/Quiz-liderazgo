@@ -155,6 +155,9 @@ form{display:grid;gap:14px}
 .join{margin-top:18px;border:1.5px solid rgba(244,232,207,.45);border-radius:20px;padding:20px 18px;text-align:center;background:linear-gradient(180deg,#123a1a,#0b2410)}
 .join h3{font-family:var(--serif);font-style:italic;font-weight:600;font-size:28px;line-height:1.1;margin:12px 0 8px}
 .join p{font-size:15px;line-height:1.55;color:var(--cream-dim);margin-bottom:16px}
+.join .jlead{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--cream);margin-bottom:8px}
+.join .jconsent{margin:0 0 14px}
+#joinBtn{font-size:16px;letter-spacing:.12em}
 .join small{display:block;margin-top:12px;font-size:12px;line-height:1.5;color:var(--cream-dim)}
 #joinOk{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--cream);margin:0}
 #joinOk small{font-family:var(--sans);font-style:normal}
@@ -247,12 +250,13 @@ form{display:grid;gap:14px}
     <div class="join" id="join" hidden>
       <div id="joinAsk">
         <span class="pill">Comunidad</span>
-        <h3>Únete a The Authority Map</h3>
-        <p>Contenido de Verónica sobre liderazgo, visibilidad y comunicación para mujeres que toman decisiones.</p>
-        <button class="btn" id="joinBtn" type="button">Sí, quiero unirme</button>
-        <small>Al unirme autorizo que Verónica Arango me escriba al correo que ya registré. Puedo darme de baja cuando quiera.</small>
+        <h3>¿Quieres desarrollar tu arquetipo?</h3>
+        <p class="jlead">Inscríbete en The Authority Map</p>
+        <p id="joinText"></p>
+        <small class="jconsent">Al inscribirme autorizo que Verónica Arango me escriba al correo que ya registré para compartirme contenido de The Authority Map. Puedo darme de baja cuando quiera.</small>
+        <button class="btn" id="joinBtn" type="button">Sí, quiero inscribirme</button>
       </div>
-      <p id="joinOk" hidden>Ya eres parte de The Authority Map ✦<small>Gracias por confiar.</small></p>
+      <p id="joinOk" hidden>Ya estás inscrita en The Authority Map ✦<small>Gracias por confiar.</small></p>
     </div>
 
     <div class="actions">
@@ -484,15 +488,22 @@ async function saveLead(lead){
 }
 
 let joinLead = null;
+const JOIN_TEXT = {
+  room:   "Eres The Room Knows. Aprende a sostener tu autoridad sin cargar con todo: delegar, poner límites y cuidar tu energía.",
+  hidden: "Eres The Hidden Asset. Aprende a hacer visible tu criterio y a ocupar el espacio que corresponde a tu capacidad.",
+  pretty: "Eres The Pretty Package. Aprende a convertir tu presencia en sustancia, con preparación, resultados y criterio.",
+  under:  "Estás en Under Construction. Aprende a construir una trayectoria con dirección y a priorizar lo que de verdad te acerca a tus metas."
+};
 function showJoin(lead){
   joinLead = lead;
+  $("joinText").textContent = JOIN_TEXT[lead.type] || "";
   $("joinAsk").hidden = false; $("joinOk").hidden = true;
-  $("joinBtn").disabled = false; $("joinBtn").textContent = "Sí, quiero unirme";
+  $("joinBtn").disabled = false; $("joinBtn").textContent = "Sí, quiero inscribirme";
   $("join").hidden = false;
 }
 $("joinBtn").onclick = async () => {
   if (!joinLead) return;
-  const btn = $("joinBtn"); btn.disabled = true; btn.textContent = "Uniéndote…";
+  const btn = $("joinBtn"); btn.disabled = true; btn.textContent = "Inscribiéndote…";
   await saveLead({ ...joinLead, source: "optin-lista", optin: true,
     consentText: "Aceptó recibir correos de The Authority Map (botón en pantalla de resultado)",
     createdAt: new Date().toISOString() });
